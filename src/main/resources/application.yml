@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/withJpa2
+    username: "jinhyeok"
+    password: "0204"
+    driver-class-name: org.h2.Driver
+
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+
+
+logging:
+  level:
+    org.hibernate.sql: debug
+    org.hibernate.type: trace
+
+
+
