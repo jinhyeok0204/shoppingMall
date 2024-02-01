@@ -45,4 +45,6 @@ class MemberServiceTest {
             memberService.join(member2);
         });
     }
+
+
 }

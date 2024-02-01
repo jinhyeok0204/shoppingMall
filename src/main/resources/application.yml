@@ -1,6 +1,7 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/withJpa2
+    hikari:
+      jdbc-url: jdbc:h2:tcp://localhost/~/withJpa2
     username: "jinhyeok"
     password: "0204"
     driver-class-name: org.h2.Driver

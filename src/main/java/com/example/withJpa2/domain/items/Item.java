@@ -5,8 +5,10 @@ import com.example.withJpa2.domain.CategoryItem;
 import com.example.withJpa2.domain.OrderItem;
 import com.example.withJpa2.domain.exceptions.NotEnoughStockException;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,7 @@ import static jakarta.persistence.FetchType.*;
 
 @Entity
 @Getter
+@Setter(value = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NoArgsConstructor
 @DiscriminatorColumn(name="dtype")
@@ -40,6 +43,18 @@ public abstract class Item {
         this.stockQuantity = stockQuantity;
     }
 
+    protected Item(Long id, String name, int price, int stockQuantity){
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
+
+    public void setItemInfo(String name, int price, int stockQuantity){
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
     //==비즈니스 로직==//
 
     // 재고 늘리기

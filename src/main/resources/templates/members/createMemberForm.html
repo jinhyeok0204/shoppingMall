@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/header}">
+<head th:replace="~{fragments/header :: header}">
     <title>회원 가입</title>
 </head>
 
@@ -10,7 +10,7 @@
 
 <body>
     <div class="container">
-        <div th:replace="~{fragments/bodyHeader}"></div>
+        <div th:replace="~{fragments/bodyHeader::bodyHeader}"></div>
 
         <form role="form" action="/members/new" th:object="${memberForm}" method="post">
             <div class="form-group">
@@ -39,7 +39,7 @@
         </form>
 
         <br/>
-        <div th:replace="~{fragments/footer}"></div>
+        <div th:replace="~{fragments/footer :: footer}"></div>
     </div> <!-- /container -->
 
     </body>
