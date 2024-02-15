@@ -26,7 +26,7 @@ public class BookForm extends ItemForm{
         bookForm.setPrice(price);
         bookForm.setStockQuantity(stockQuantity);
         bookForm.setAuthor(author);
-        bookForm.setAuthor(isbn);
+        bookForm.setIsbn(isbn);
 
         return bookForm;
     }

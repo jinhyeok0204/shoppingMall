@@ -1,9 +1,6 @@
 package com.example.withJpa2.service;
 
-import com.example.withJpa2.domain.Delivery;
-import com.example.withJpa2.domain.Member;
-import com.example.withJpa2.domain.Order;
-import com.example.withJpa2.domain.OrderItem;
+import com.example.withJpa2.domain.*;
 import com.example.withJpa2.domain.items.Item;
 import com.example.withJpa2.repository.ItemRepository;
 import com.example.withJpa2.repository.MemberRepository;
@@ -11,6 +8,8 @@ import com.example.withJpa2.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +44,7 @@ public class OrderService {
     }
     //검색
 
-//    public List<Order> searchOrders(OrderSearch orderSearch)
+    public List<Order> searchOrders(OrderSearch orderSearch){
+        return orderRepository.findAllByCriteria(orderSearch);
+    }
 }

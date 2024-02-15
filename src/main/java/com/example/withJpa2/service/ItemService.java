@@ -1,5 +1,6 @@
 package com.example.withJpa2.service;
 
+import com.example.withJpa2.domain.items.Book;
 import com.example.withJpa2.domain.items.Item;
 import com.example.withJpa2.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+
     public List<Item> findItem(){
         return itemRepository.findAll();
     }
@@ -27,10 +29,14 @@ public class ItemService {
         return itemRepository.findOne(itemId);
     }
 
+    public List<Item> findAll(){
+        return itemRepository.findAll();
+    }
     @Transactional
     public void updateItem(Long id, String name, int price, int stockQuantity){
         Item item = itemRepository.findOne(id);
         item.setItemInfo(name, price, stockQuantity);
-
     }
+
+
 }
