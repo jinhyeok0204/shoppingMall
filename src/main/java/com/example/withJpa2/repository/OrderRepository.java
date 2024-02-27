@@ -1,17 +1,19 @@
 package com.example.withJpa2.repository;
 
-import com.example.withJpa2.domain.Member;
+import com.example.withJpa2.domain.*;
 import com.example.withJpa2.domain.Order;
-import com.example.withJpa2.domain.OrderSearch;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.withJpa2.domain.QMember.member;
+import static com.example.withJpa2.domain.QOrder.order;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,28 +29,58 @@ public class OrderRepository {
         return em.find(Order.class, id);
     }
 
-    public List<Order> findAllByCriteria(OrderSearch orderSearch) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Order> cq = cb.createQuery(Order.class);
-        Root<Order> o = cq.from(Order.class);
-        Join<Order, Member> m = o.join("member", JoinType.INNER); //회원과 조인
-        List<Predicate> criteria = new ArrayList<>();
-//주문 상태 검색
-        if (orderSearch.getOrderStatus() != null) {
-            Predicate status = cb.equal(o.get("status"),
-                    orderSearch.getOrderStatus());
-            criteria.add(status);
-        }
-//회원 이름 검색
-        if (StringUtils.hasText(orderSearch.getMemberName())) {
-            Predicate name =
-                    cb.like(m.<String>get("name"), "%" + orderSearch.getMemberName()
-                            + "%");
-            criteria.add(name);
-        }
-        cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
-        TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); //최대 1000 건
-        return query.getResultList();
+    public List<Order> findAll(OrderSearch orderSearch){
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
+
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        return query.select(order)
+                    .from(order)
+                    .join(order.member, member)
+                    .where(statusEq(orderSearch.getOrderStatus()),
+                            nameLike(orderSearch.getMemberName()))
+                    .limit(1000)
+                    .fetch();
     }
 
+    private BooleanExpression statusEq(OrderStatus status){
+        if(status == null){
+            return null;
+        }
+        return order.status.eq(status);
+    }
+
+    private BooleanExpression nameLike(String name){
+        if(!StringUtils.hasText(name)){
+            return null;
+        }
+        return member.name.like(name);
+    }
+
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+        ).getResultList();
+    }
+
+    public List<OrderSimpleQueryDto> findOrderDtos(){
+        return em.createQuery(
+                "select new com.example.withJpa2.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+                        " from Order o " +
+                        " join o.member m" +
+                        " join o.delivery d", OrderSimpleQueryDto.class)
+                .getResultList();
+    }
+
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select distinct o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d"+
+                        " join fetch o.orderItemList oi" +
+                        " join fetch oi.item i", Order.class)
+                .getResultList();
+    }
 }

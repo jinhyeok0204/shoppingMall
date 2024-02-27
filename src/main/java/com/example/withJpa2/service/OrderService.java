@@ -25,8 +25,7 @@ public class OrderService {
         Member member = memberRepository.findOne(memberId);
         Item item = itemRepository.findOne(itemId);
 
-        Delivery delivery = new Delivery();
-        delivery.setAddress(member.getAddress());
+        Delivery delivery = Delivery.createDelivery(member.getAddress());
 
         OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
 
@@ -45,6 +44,6 @@ public class OrderService {
     //검색
 
     public List<Order> searchOrders(OrderSearch orderSearch){
-        return orderRepository.findAllByCriteria(orderSearch);
+        return orderRepository.findAll(orderSearch);
     }
 }

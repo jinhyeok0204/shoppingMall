@@ -1,6 +1,8 @@
 package com.example.withJpa2.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +19,13 @@ public class Member {
     @Id @GeneratedValue
     @Column(name="member_id")
     private Long id;
+    @NotEmpty
     private String name;
 
     @Embedded
     private Address address;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orderList = new ArrayList<>();
 
@@ -36,5 +40,12 @@ public class Member {
         member.setName(name);
         member.setAddress(address);
         return member;
+    }
+    public void changeName(String name){
+        this.name = name;
+    }
+
+    public void changeAddress(Address address){
+        this.address = address;
     }
 }

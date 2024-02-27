@@ -73,8 +73,7 @@ class OrderServiceTest {
         Member member = Member.createMember("Jeon", new Address("Gwangju", "namgu", "1000"));
         em.persist(member);
 
-        Delivery delivery = new Delivery();
-        delivery.setAddress(member.getAddress());
+        Delivery delivery = Delivery.createDelivery(member.getAddress());
 
         Item item = new Album("newJeans 1st", 15000, 5, "newJeans", "r&b");
         em.persist(item);
